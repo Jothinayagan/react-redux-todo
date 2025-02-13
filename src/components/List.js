@@ -11,38 +11,45 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteTodo, toggleTodo } from "../store/slice/todo.slice";
 
-export const List = (props) => {
-  const { list, setList } = props;
+export const List = () => {
+  const dispatch = useDispatch();
 
-  const handleToggle = (index) => {
-    const copyList = [...list];
-    copyList[index].completed = !copyList[index].completed;
-    setList(copyList);
+  const todoList = useSelector(state => state.todos);
+  console.log(todoList);
+
+  const handleToggle = (id) => {
+    dispatch(toggleTodo(id));
+    // const copyList = [...list];
+    // copyList[index].completed = !copyList[index].completed;
+    // setList(copyList);
   };
 
-  const handleDelete = (index) => {
-    const copyList = [...list];
-    copyList.splice(index, 1);
-    setList(copyList);
+  const handleDelete = (id) => {
+    dispatch(deleteTodo(id));
+    // const copyList = [...list];
+    // copyList.splice(index, 1);
+    // setList(copyList);
   };
 
   return (
     <Box bgcolor={"lightgray"} borderColor={"gray"} borderRadius={2}>
-      {list.length ? (
-        list?.map((value, index) => (
+      {todoList?.length ? (
+        todoList?.map((value, index) => (
           <ListItem
             key={value?.id}
             disablePadding
             secondaryAction={
-              <IconButton onClick={() => handleDelete(index)}>
+              <IconButton onClick={() => handleDelete(value?.id)}>
                 <Delete color="error" />
               </IconButton>
             }
           >
             <ListItemButton
               role={undefined}
-              onClick={() => handleToggle(index)}
+              onClick={() => handleToggle(value?.id)}
               dense
             >
               <ListItemIcon>
@@ -64,16 +71,7 @@ export const List = (props) => {
                     {value?.title}
                   </Typography>
                 }
-                secondary={
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      textDecorationLine: value.completed ? "line-through" : "",
-                    }}
-                  >
-                    secondary text
-                  </Typography>
-                }
+
               />
             </ListItemButton>
           </ListItem>
@@ -86,5 +84,6 @@ export const List = (props) => {
         </Stack>
       )}
     </Box>
+
   );
 };
